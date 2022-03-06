@@ -1,0 +1,86 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Détails du produit
+{% endblock %}
+
+{% block body %}
+
+	{% for msg in app.flashes('success') %}
+		<div class="alert alert-success text-center">
+			{{ msg }}
+		</div>
+	{% endfor %}
+
+{# affichage des msg flash #}
+
+	<h1 class="text-center bg-light my-3">Fiche produit : "{{ produit.nom }}"</h1>
+
+	<div class="row">
+		<div class="col-md-4">
+			<img src="{{ asset('images/produits/' ~ produit.image) }}" alt="Image de {{ produit.nom }}" style="width: 200px">
+		</div>
+		<div class="col md-8">
+			<h3>
+				{{ produit.description }}
+			</h3>
+			<h4>
+				{{ produit.prix }}€
+			</h4>
+			<h5>
+				Ajouté par {{ produit.auteur.username }} dans la catégorie {{ produit.categorie }}
+			</h5>
+
+			{% if app.user is same as (produit.auteur) %}
+				<a href="{{ path('produit_edit', {'id': produit.id}) }}" class="btn btn-primary">Editer mon produit</a>
+				{# si l'utilisateur connecté est le même que celui qui a posté le produit, il voit un lien permettant d'éditer le produit #}
+			{% endif %}
+			<a href="{{ path('cart_add', {'id': produit.id}) }}" class="btn btn-success">Ajouter au panier</a>
+		</div>
+	</div>
+
+
+	<h2 class="text-center my-3 bg-light">Commentaires des utilisateurs</h2>
+
+	{% if coms | length <= 0 %}
+
+		<h3>
+			Aucun commentaire
+		</h3>
+
+	{% else %}
+
+		<table class="table table-bordered">
+			<tbody>
+				{% for com in coms %}
+					<tr>
+						<td>Posté par
+							{{ com.auteur }}
+							<br>
+							<small>le
+								{{ com.createdAt | date('d/m/Y à H:i:s') }}</small>
+						</td>
+						<td>{{ com.contenu }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% endif %}
+
+
+	{% if app.user %}
+		{{ form_start(cForm) }}
+		{{ form_row(cForm.contenu, {
+        'label': 'Votre commentaire'
+    }) }}
+		<button class="btn btn-primary mt-2" type="submit">Poster</button>
+		{{ form_end(cForm) }}
+	{% else %}
+		<a href="{{ path('app_login') }}">Veuillez vous connecter pour poster un commentaire.</a>
+	{% endif %}
+
+{# 
+	si l'utilisateur est connecté, il peut voir le formulaire pour poster un commentaire
+	sinon, un lien s'affiche pour qu'il puisse se connecter
+ #}
+
+{% endblock %}

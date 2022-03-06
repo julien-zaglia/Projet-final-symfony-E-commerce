@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Votre profil
+{% endblock %}
+
+{% block body %}
+
+	<h1 class="bg-light text-center my-3">Votre profil</h1>
+
+	{% if produits | length == 0 %}
+
+		<h2 class="text-center">Vous n'avez pas encore ajouté de produit ! Pour commencer à en ajouter,
+			<a href="{{ path('produit_add') }}">cliquez ici !</a>
+		</h2>
+
+	{% else %}
+
+		<table class="table">
+			<thead>
+				<th>Nom du produit</th>
+				<th>Catégorie</th>
+				<th>Description</th>
+				<th>Prix</th>
+				<th></th>
+			</thead>
+			<tbody>
+				{% for produit in produits %}
+					<tr>
+						<td>
+							{{ produit.nom }}
+						</td>
+						<td>
+							{{ produit.categorie }}
+						</td>
+						<td>
+							{{ produit.description }}
+						</td>
+						<td>
+							{{ produit.prix }}€
+						</td>
+						<td>
+							<a href="{{ path('produit_show', { 'id': produit.id }) }}" class="btn btn-primary">Page du produit</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+	{% endif %}
+
+	{#
+		si l'utilisateur n'a jamais posté de produit, un message est affiché
+		sinon, un tableau contenant les infos des produits que l'utilisateur a postés est affiché
+	 #}
+{% endblock %}
